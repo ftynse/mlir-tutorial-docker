@@ -77,5 +77,8 @@ RUN cmake .. \
   -DLLVM_CCACHE_BUILD=On \
   -DLLVM_CCACHE_DIR=$HOME/ccache \
   -DLLVM_DIR=$HOME/llvm-project/build/lib/cmake/llvm \
-  -DLLVM_EXTERNAL_LIT=$HOME/llvm-project/build/bin/llvm-lit \ -DENZYME_MLIR=ON
+  -DMLIR_DIR=$HOME/llvm-project/build/lib/cmake/mlir \
+  -DLLVM_EXTERNAL_LIT=$HOME/llvm-project/build/bin/llvm-lit \
+  -DENZYME_MLIR=On
++RUN cmake --build . -t check-enzymemlir
 RUN cmake --build . -t check-enzymemlir || true
