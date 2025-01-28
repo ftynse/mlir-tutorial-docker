@@ -65,3 +65,17 @@ RUN cmake --build build -t mlir-opt mlir-translate mlir-transform-opt mlir-cpu-r
 RUN cmake --build build -t clang
 RUN cmake --build build -t libclangTooling.a
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+RUN cmake --build build -t opt
+WORKDIR /home/mlir
+RUN git clone https://github.com/EnzymeAD/Enzyme.git && mkdir Enzyme/enzyme/build
+WORKDIR /home/mlir/Enzyme/enzyme/build
+RUN cmake .. \
+  -G Ninja \
+  -DCMAKE_CXX_COMPILER=clang++ \
+  -DCMAKE_C_COMPILER=clang \
+  -DCMAKE_PREFIX_PATH=$HOME/usr \
+  -DLLVM_CCACHE_BUILD=On \
+  -DLLVM_CCACHE_DIR=$HOME/ccache \
+  -DLLVM_DIR=$HOME/llvm-project/build/lib/cmake/llvm \
+  -DLLVM_EXTERNAL_LIT=$HOME/llvm-project/build/bin/llvm-lit
+RUN cmake --build . -t check-enzyme || true
